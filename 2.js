@@ -1,18 +1,21 @@
-function noConsecutiveDigits(N){
-    let J = 0;
-    J= N + 1 ;
+function noConsecutiveDigits(N) {
+    let J = N + 1;
 
-    /* 
-    * methodes à modifer : J > 990
-    * methodes exactes : J ne doit pas contenir le même chiffre
-    */  
-
-    for (let k = 0; J > 990; k++) {
-        J = J + k; 
-        return ("N : " + N + ", J : " + J)
+    function hasConsecutiveDigits(num) {
+        const numStr = num.toString();
+        for (let i = 0; i < numStr.length - 1; i++) {
+            if (numStr[i] === numStr[i + 1]) {
+                return true;
+            }
+        }
+        return false;
     }
 
-    return ("N : " + N + ", J : " + J)
+    while (hasConsecutiveDigits(J)) {
+        J++;
+    }
+
+    return "N : " + N + ", J : " + J;
 }
 
-noConsecutiveDigits(990)
+console.log(noConsecutiveDigits(990));

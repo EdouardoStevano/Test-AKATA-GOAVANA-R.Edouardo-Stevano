@@ -1,35 +1,42 @@
-function isValidHTML(html){
-    const isValid = true;
-
-    /* 
-    * Prendre le balise en enlèvant tous les valuer après et avant ">" de  html
-    * stocker cette balise dans une variables "balise"
-    * Utiliser cette balise dans le constant ParagrapheExpe
-    */  
+function isValidHTML(html) {
+    let isValid = true;
     
-    const ParagrapheExpe = html.includes("<p>"+""+"</p>") ? "paragraphe" : html.includes("<p>"+ "</span>" +"</p>") ? "span" : (html.includes("<p>"+ "<span>" + "</span>" +"</p>") || html.includes("<p>"+ "</p>" + "<span>" +"</span>")) ? "baliseTrue" : "" ;
+    const tags = html.match(/<\/?[^>]+(>|$)/g);
 
-    switch (ParagrapheExpe) {
-        case "paragraphe":
-                console.log("La balise p est bien fermé au bon endroit")
-                isValid == true;
-                return isValid;
-            break;
-        case "span":
-                console.log("La balise span n'est pas fermé")
-                isValid == false;
-                return isValid;
-            break;
-        case "baliseTrue":
-                isValid == true;
-                return isValid;
-            break;
-        default:
-            console.log("Veuillez ecrire une code valide")
-            return isValid;
-            break;
+    if (!tags) {
+        console.log("Aucune balise trouvée");
+        return false;
     }
+
+    const stack = [];
+
+    for (const tag of tags) {
+        if (tag.startsWith('</')) {
+            const tagName = tag.slice(2, -1);
+            if (stack.length === 0 || stack.pop() !== tagName) {
+                console.log(`La balise de fermeture </${tagName}> ne correspond pas`);
+                return false;
+            }
+        } else {
+            const tagName = tag.slice(1, tag.indexOf(' ') > 0 ? tag.indexOf(' ') : -1).replace('>', '');
+            if (!tag.endsWith('/>')) {
+                stack.push(tagName);
+            }
+        }
+    }
+
+    if (stack.length > 0) {
+        console.log("Toutes les balises ne sont pas fermées");
+        return false;
+    }
+
+    console.log("Toutes les balises sont correctement fermées");
+    return true;
 }
 
-isValidHTML("<p><span></span></p>")
-
+// Tests
+console.log(isValidHTML("<p><span></span></p>"));
+console.log(isValidHTML("<p><span></p></span>"));
+console.log(isValidHTML("<p><span></span><div></div></p>"));
+console.log(isValidHTML("<p><span></span>"));
+console.log(isValidHTML("<p><img src='image.png' /></p>"));
